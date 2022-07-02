@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coronavirus Cases Tracker</title>
+    <!--Bootstrap CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+<h1>Coronavirus Cases Tracker</h1>
+<p>This app tracks the number of cases in each country according to <a
+        href="https://github.com/CSSEGISandData/COVID-19">CSSEGISandData</a></p>
+<!--<p>Total Cases: <b><span th:text="${totalCases}"></span></b></p>-->
+<!--<p class="text-bg-info">Cases since yesterday: <b><span th:text="${totalChange}"></span></b></p>-->
+<div class="container justify-content-start" style="max-width: 500px; margin-left: 1px">
+    <div class="row row-cols-2">
+        <div class="col text-bg-info">Total Cases: <b><span th:text="${totalCases}"></span></b></div>
+        <div class="col text-bg-info">Cases since yesterday: <b><span th:text="${totalChange}"></span></b></div>
+    </div>
+</div>
+
+<br/>
+
+<label for="search-input"></label><input type="text" id="search-input" onkeyup="search()"
+                                         placeholder="Search">
+<table id="data-table" class="table table-striped" style="width: auto">
+    <tr>
+        <th>Country</th>
+        <th>State</th>
+        <th>Cases</th>
+        <th>Change (1 day)</th>
+    </tr>
+    <tr th:each="row : ${data}">
+        <td th:text="${row.getCountry()}"></td>
+        <td th:text="${row.getState()}"></td>
+        <td th:text="${row.getLatestTotalCases()}"></td>
+        <td th:text="(${row.oneDayChange()} > 0 ? '+' + ${row.oneDayChange()} : ${row.oneDayChange()})"></td>
+    </tr>
+</table>
+</body>
+
+<script>
+    // Loops through all rows and cells to find elements that match the search input
+    function search() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search-input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("data-table");
+        trs = table.getElementsByTagName("tr");
+
+        // Loop through rows
+        for (var rowI = 0; rowI < trs.length; rowI++) {
+
+            // define the row's cells
+            var tds = trs[rowI].getElementsByTagName("td");
+
+            // hide the row
+            trs[rowI].style.display = "none";
+
+            // loop through row cells
+            for (var cellI = 0; cellI < tds.length; cellI++) {
+
+                // if there's a match
+                if (tds[cellI].innerHTML.toUpperCase().indexOf(filter) > -1) {
+
+                    // show the row
+                    trs[rowI].style.display = "";
+                }
+            }
+        }
+    }
+</script>
+
+</html>
